@@ -1,0 +1,195 @@
+-- -----------------------------------------------------------------------------
+--             Génération d'une base de données pour
+--                           PostgreSQL
+--                        (12/10/2012 15:20:33)
+-- -----------------------------------------------------------------------------
+--      Nom de la base : MLR1
+--      Projet : WS_PPE_Hellenic
+--      Auteur : sio2d5
+--      Date de dernière modification : 12/10/2012 15:20:23
+-- -----------------------------------------------------------------------------
+
+DROP TABLE IMMOBILIER;
+
+DROP TABLE REGION;
+
+DROP TABLE TERRAIN;
+
+DROP TABLE BIEN;
+
+DROP TABLE PHOTO;
+
+DROP TABLE CLIENT;
+
+DROP TABLE RESERVATION;
+
+-- -----------------------------------------------------------------------------
+--       CREATION DE LA BASE 
+-- -----------------------------------------------------------------------------
+
+CREATE DATABASE MLR1;
+
+-- -----------------------------------------------------------------------------
+--       TABLE : IMMOBILIER
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE IMMOBILIER
+   (
+    REF char(32) NOT NULL  ,
+    NBPIÈCES char(32) NULL  ,
+    NBCHAMBRES char(32) NULL  ,
+    PRIX char(32) NULL  ,
+    DESCRIPTION char(32) NULL  ,
+    ADRESSE char(32) NULL  ,
+    SURFACE char(32) NULL  
+,   CONSTRAINT PK_IMMOBILIER PRIMARY KEY (REF)
+   );
+
+-- -----------------------------------------------------------------------------
+--       TABLE : REGION
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE REGION
+   (
+    IDREG char(32) NOT NULL  ,
+    NOMREG char(32) NULL  
+,   CONSTRAINT PK_REGION PRIMARY KEY (IDREG)
+   );
+
+-- -----------------------------------------------------------------------------
+--       TABLE : TERRAIN
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE TERRAIN
+   (
+    REF char(32) NOT NULL  ,
+    PRIX char(32) NULL  ,
+    DESCRIPTION char(32) NULL  ,
+    ADRESSE char(32) NULL  ,
+    SURFACE char(32) NULL  
+,   CONSTRAINT PK_TERRAIN PRIMARY KEY (REF)
+   );
+
+-- -----------------------------------------------------------------------------
+--       TABLE : BIEN
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE BIEN
+   (
+    REF char(32) NOT NULL  ,
+    IDREG char(32) NOT NULL  ,
+    PRIX char(32) NULL  ,
+    DESCRIPTION char(32) NULL  ,
+    ADRESSE char(32) NULL  ,
+    SURFACE char(32) NULL  
+,   CONSTRAINT PK_BIEN PRIMARY KEY (REF)
+   );
+
+-- -----------------------------------------------------------------------------
+--       INDEX DE LA TABLE BIEN
+-- -----------------------------------------------------------------------------
+
+CREATE  INDEX I_FK_BIEN_REGION
+     ON BIEN (IDREG)
+    ;
+
+-- -----------------------------------------------------------------------------
+--       TABLE : PHOTO
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE PHOTO
+   (
+    URLPHOTO char(32) NOT NULL  ,
+    REF char(32) NOT NULL  ,
+    NOMPHOTO char(32) NULL  ,
+    DESCRIPTIONPHOTO char(32) NULL  
+,   CONSTRAINT PK_PHOTO PRIMARY KEY (URLPHOTO)
+   );
+
+-- -----------------------------------------------------------------------------
+--       INDEX DE LA TABLE PHOTO
+-- -----------------------------------------------------------------------------
+
+CREATE  INDEX I_FK_PHOTO_BIEN
+     ON PHOTO (REF)
+    ;
+
+-- -----------------------------------------------------------------------------
+--       TABLE : CLIENT
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE CLIENT
+   (
+    IDCLI char(32) NOT NULL  ,
+    NOMCLI char(32) NULL  ,
+    PRENOMCLI char(32) NULL  ,
+    ADRESSECLI char(32) NULL  
+,   CONSTRAINT PK_CLIENT PRIMARY KEY (IDCLI)
+   );
+
+-- -----------------------------------------------------------------------------
+--       TABLE : RESERVATION
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE RESERVATION
+   (
+    IDRES char(32) NOT NULL  ,
+    REF char(32) NOT NULL  ,
+    IDCLI char(32) NOT NULL  ,
+    DATERES char(32) NULL  ,
+    DATEVENTE char(32) NULL  
+,   CONSTRAINT PK_RESERVATION PRIMARY KEY (IDRES)
+   );
+
+-- -----------------------------------------------------------------------------
+--       INDEX DE LA TABLE RESERVATION
+-- -----------------------------------------------------------------------------
+
+CREATE  INDEX I_FK_RESERVATION_BIEN
+     ON RESERVATION (REF)
+    ;
+
+CREATE  INDEX I_FK_RESERVATION_CLIENT
+     ON RESERVATION (IDCLI)
+    ;
+
+
+-- -----------------------------------------------------------------------------
+--       CREATION DES REFERENCES DE TABLE
+-- -----------------------------------------------------------------------------
+
+
+ALTER TABLE IMMOBILIER ADD 
+     CONSTRAINT FK_IMMOBILIER_BIEN
+          FOREIGN KEY (REF)
+               REFERENCES BIEN (REF);
+
+ALTER TABLE TERRAIN ADD 
+     CONSTRAINT FK_TERRAIN_BIEN
+          FOREIGN KEY (REF)
+               REFERENCES BIEN (REF);
+
+ALTER TABLE BIEN ADD 
+     CONSTRAINT FK_BIEN_REGION
+          FOREIGN KEY (IDREG)
+               REFERENCES REGION (IDREG);
+
+ALTER TABLE PHOTO ADD 
+     CONSTRAINT FK_PHOTO_BIEN
+          FOREIGN KEY (REF)
+               REFERENCES BIEN (REF);
+
+ALTER TABLE RESERVATION ADD 
+     CONSTRAINT FK_RESERVATION_BIEN
+          FOREIGN KEY (REF)
+               REFERENCES BIEN (REF);
+
+ALTER TABLE RESERVATION ADD 
+     CONSTRAINT FK_RESERVATION_CLIENT
+          FOREIGN KEY (IDCLI)
+               REFERENCES CLIENT (IDCLI);
+
+
+-- -----------------------------------------------------------------------------
+--                FIN DE GENERATION
+-- -----------------------------------------------------------------------------
